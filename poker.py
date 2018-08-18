@@ -272,6 +272,63 @@ def hand_rank(hand):
     return 0
 
 
+def test_hand_rank():
+    # Nothing
+    assert hand_rank(['2 of Spades',
+                      '6 of Spades',
+                      'Queen of Spades',
+                      '7 of Spades',
+                      '5 of Hearts']) == 0
+    # One pair
+    assert hand_rank(['2 of Spades',
+                      '2 of Hearts',
+                      'Queen of Spades',
+                      '7 of Spades',
+                      '5 of Hearts']) == 1
+    # Two pairs
+    assert hand_rank(['2 of Spades',
+                      '2 of Hearts',
+                      'Queen of Spades',
+                      'Queen of Diamonds',
+                      '5 of Hearts']) == 2
+    # Three of a kind
+    assert hand_rank(['Queen of Hearts',
+                      '2 of Hearts',
+                      'Queen of Spades',
+                      'Queen of Diamonds',
+                      '3 of Spades']) == 3
+    # Straight
+    assert hand_rank(['2 of Spades',
+                      '6 of Clubs',
+                      '5 of Spades',
+                      '3 of Spades',
+                      '4 of Spades']) == 4
+    # Flush
+    assert hand_rank(['2 of Spades',
+                      '10 of Spades',
+                      '5 of Spades',
+                      '3 of Spades',
+                      '4 of Spades']) == 5
+    # Full house
+    assert hand_rank(['Queen of Hearts',
+                      '2 of Hearts',
+                      'Queen of Spades',
+                      'Queen of Diamonds',
+                      '2 of Spades']) == 6
+    # Four of a kind
+    assert hand_rank(['2 of Spades',
+                      '2 of Hearts',
+                      '5 of Spades',
+                      '2 of Clubs',
+                      '2 of Diamonds']) == 7
+    # Straight flush
+    assert hand_rank(['2 of Spades',
+                      '6 of Spades',
+                      '5 of Spades',
+                      '3 of Spades',
+                      '4 of Spades']) == 8
+
+
 def cmp_hand(first, second):
     first_hr = hand_rank(first)
     second_hr = hand_rank(second)
@@ -279,6 +336,126 @@ def cmp_hand(first, second):
         return cmp_ranks(first, second)
     return 1 if first_hr > second_hr else -1
 
+
+
+def check_two_hands(first, second, betters):
+    assert cmp_hand(first, second) == -1
+    for better in betters:
+        for worse in (first, second):
+            assert cmp_hand(worse, worse) == 0
+            assert cmp_hand(better, worse) == 1
+            assert cmp_hand(worse, better) == -1
+
+
+def test_cmp_hand():
+    sf1 = ['2 of Spades',
+           '6 of Spades',
+           '5 of Spades',
+           '3 of Spades',
+           '4 of Spades']
+    sf2 = ['3 of Spades',
+           '7 of Spades',
+           '6 of Spades',
+           '4 of Spades',
+           '5 of Spades']
+    check_two_hands(sf1, sf2, [])
+    betters = [sf1, sf2]
+    four1 = ['2 of Spades',
+             '2 of Hearts',
+             '5 of Spades',
+             '2 of Clubs',
+             '2 of Diamonds']
+    four2 = ['3 of Spades',
+             '3 of Hearts',
+             '5 of Spades',
+             '3 of Clubs',
+             '3 of Diamonds']
+    check_two_hands(four1, four2, betters)
+    betters += [four1, four2]
+    fh1 = ['2 of Spades',
+           '2 of Hearts',
+           '5 of Spades',
+           '5 of Clubs',
+           '2 of Diamonds']
+    fh2 = ['2 of Spades',
+           '2 of Hearts',
+           '5 of Spades',
+           '5 of Clubs',
+           '5 of Diamonds']
+    check_two_hands(fh1, fh2, betters)
+    betters += [fh1, fh2]
+    f1 = ['3 of Spades',
+          '7 of Spades',
+          'Ace of Spades',
+          'Jack of Spades',
+          '10 of Spades']
+    f2 = ['3 of Spades',
+          '7 of Spades',
+          'Ace of Spades',
+          'Queen of Spades',
+          '10 of Spades']
+    check_two_hands(f1, f2, betters)
+    betters += [f1, f2]
+    s1 = ['3 of Spades',
+          '7 of Hearts',
+          '6 of Clubs',
+          '4 of Spades',
+          '5 of Spades']
+    s2 = ['5 of Spades',
+          '8 of Hearts',
+          '9 of Clubs',
+          '6 of Spades',
+          '7 of Spades']
+    check_two_hands(s1, s2, betters)
+    betters += [s1, s2]
+    tok1 = ['2 of Spades',
+            '2 of Hearts',
+            '5 of Spades',
+            '6 of Clubs',
+            '2 of Diamonds']
+    tok2 = ['2 of Spades',
+            '2 of Hearts',
+            '5 of Spades',
+            '7 of Clubs',
+            '2 of Diamonds']
+    check_two_hands(tok1, tok2, betters)
+    betters += [tok1, tok2]
+    tp1 = ['2 of Spades',
+           '2 of Hearts',
+           '5 of Spades',
+           '6 of Clubs',
+           '5 of Diamonds']
+    tp2 = ['2 of Spades',
+           '2 of Hearts',
+           '5 of Spades',
+           '7 of Clubs',
+           '5 of Diamonds']
+    check_two_hands(tp1, tp2, betters)
+    betters += [tp1, tp2]
+    betters += [tok1, tok2]
+    p1 = ['2 of Spades',
+          '10 of Hearts',
+          '5 of Spades',
+          '6 of Clubs',
+          '5 of Diamonds']
+    p2 = ['2 of Spades',
+          'Queen of Hearts',
+          '5 of Spades',
+          '7 of Clubs',
+          '5 of Diamonds']
+    check_two_hands(p1, p2, betters)
+    betters += [p1, p2]
+    zero1 = ['2 of Spades',
+             '3 of Hearts',
+             '5 of Spades',
+             'Jack of Clubs',
+             'King of Diamonds']
+    zero2 = ['2 of Spades',
+             '3 of Hearts',
+             '6 of Spades',
+             'Queen of Clubs',
+             'King of Diamonds']
+    check_two_hands(zero1, zero2, betters)
 
 
 if __name__ == "__main__":
@@ -294,4 +471,6 @@ if __name__ == "__main__":
     test_straight_flush()
     test_cmp_ranks()
     test_value_counts()
+    test_hand_rank()
+    test_cmp_hand()
     print("Finished")
