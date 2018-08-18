@@ -1,0 +1,18 @@
+# See https://docs.travis-ci.com/user/customizing-the-build/ for details of
+# settings in this file
+
+language: python
+
+python:
+    # Test on some different versions of Python
+    - 3.4
+    - 3.5
+    - 3.6
+
+install:
+    # Install testing utility
+    - pip install pytest
+
+script:
+    # Run tests
+    - pytest poker.py
