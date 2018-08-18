@@ -3,13 +3,11 @@
 
 
 def test_new_deck():
-    # Test new_deck function
-    return None
+    # We will test the `make_new_deck` function
+    pass
 
 
 if __name__ == "__main__":
     print("Running tests")
     test_new_deck()
     print("Finished")
-
-
