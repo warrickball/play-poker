@@ -1,0 +1,3 @@
+# Python / pytest cruft
+.pytest_cache/
+__pycache__/
